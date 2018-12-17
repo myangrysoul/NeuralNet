@@ -7,17 +7,17 @@ import java.util.HashMap;
 
 class NeuralNet implements Serializable {
     double[] inputLayer;
-    private double[] hiddenLayerOut;
-    private double[] outputLayerOut;
-    private double[] hiddenLayerErr;
-    private double[] outputLayerErr;
+    private final double[] hiddenLayerOut;
+    private final double[] outputLayerOut;
+    private final double[] hiddenLayerErr;
+    private final double[] outputLayerErr;
     private ArrayList<Neuron> hiddenLayer;
     private ArrayList<Neuron> outputLayer;
     ImageLoader imageLoader = new ImageLoader();
     double[][] patterns = imageLoader.getArray();
     int studycounter = 0;
 
-    private double[][] answers = {
+    private final double[][] answers = {
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -47,8 +47,7 @@ class NeuralNet implements Serializable {
     };
 
     NeuralNet() {
-        System.out.println(Arrays.toString(patterns[0]));
-        inputLayer = new double[patterns[0].length];
+        inputLayer = new double[300];
         hiddenLayerOut = new double[80];
         outputLayerOut = new double[answers[0].length];
         outputLayerErr = new double[answers[0].length];
@@ -56,8 +55,8 @@ class NeuralNet implements Serializable {
     }
 
     void initInputLayer(String name) {
-        int[] rgbArray = new int[400];
-        imageLoader.loadImg(name).getRGB(0, 0, 20, 20, rgbArray, 0, 20);
+        int[] rgbArray;
+        rgbArray=imageLoader.rgbArr(imageLoader.loadImg(name));
         for (int i = 0; i < rgbArray.length; i++) {
             inputLayer[i] = rgbArray[i];
         }
@@ -66,7 +65,7 @@ class NeuralNet implements Serializable {
     private double[] initWeight(int numOfEl) {
         double[] weight = new double[numOfEl];
         for (int i = 0; i < weight.length; i++) {
-            weight[i] = Math.random() * (-2) + 1;
+            weight[i] = Math.random() * -2 + 1;
         }
         return weight;
     }
@@ -135,6 +134,9 @@ class NeuralNet implements Serializable {
     }
 
     void study() {
+        initHidden(patterns[0]);
+        counthiddenLayerOut();
+        initOutputLayer();
         do {
             for (int numOfPatterns = 0; numOfPatterns < patterns.length; numOfPatterns++) {
                 setHiddenLayerInputs(patterns[numOfPatterns]);
@@ -200,9 +202,14 @@ class NeuralNet implements Serializable {
             outputNeuron.setInputs(hiddenLayerOut);
         }
         counOutput();
+        double sum=0;
+        for(double outputNeuron:outputLayerOut){
+            sum+=outputNeuron;
+        }
+
         char index = 'A';
         for (double outputNeuron : outputLayerOut) {
-            out.put(index, new DecimalFormat("#0.00").format(outputNeuron * 100));
+            out.put(index, new DecimalFormat("#0.00").format(outputNeuron/sum * 100));
             index++;
         }
         return out;

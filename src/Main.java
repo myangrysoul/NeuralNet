@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,9 +18,6 @@ public class Main {
             net = (NeuralNet) is.readObject();
         } catch (Exception e1) {
             net = new NeuralNet();
-            net.initHidden(net.patterns[9]);
-            net.counthiddenLayerOut();
-            net.initOutputLayer();
             net.study();
             try {
                 ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("Net.ser"));
@@ -29,10 +27,10 @@ public class Main {
             }
         }
 
-        net.initInputLayer("V");
+        net.initInputLayer("K");
         HashMap<Character, String> map = net.check(net.inputLayer);
-        for (char num : map.keySet()) {
-            String s = num + " : " + map.get(num) + "%";
+        for (Entry<Character, String> characterStringEntry : map.entrySet()) {
+            String s = characterStringEntry.getKey() + " : " + characterStringEntry.getValue() + '%';
             System.out.println(s);
         }
     }

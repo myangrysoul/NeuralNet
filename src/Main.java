@@ -27,7 +27,7 @@ public class Main {
             }
         }
 
-        net.initInputLayer("K");
+        net.initInputLayer("A");
         HashMap<Character, String> map = net.check(net.inputLayer);
         for (Entry<Character, String> characterStringEntry : map.entrySet()) {
             String s = characterStringEntry.getKey() + " : " + characterStringEntry.getValue() + '%';

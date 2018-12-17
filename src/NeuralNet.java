@@ -15,7 +15,6 @@ class NeuralNet implements Serializable {
     private ArrayList<Neuron> outputLayer;
     ImageLoader imageLoader = new ImageLoader();
     double[][] patterns = imageLoader.getArray();
-    int studycounter = 0;
 
     private final double[][] answers = {
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -47,7 +46,7 @@ class NeuralNet implements Serializable {
     };
 
     NeuralNet() {
-        inputLayer = new double[300];
+        inputLayer = new double[400];
         hiddenLayerOut = new double[80];
         outputLayerOut = new double[answers[0].length];
         outputLayerErr = new double[answers[0].length];
@@ -56,7 +55,7 @@ class NeuralNet implements Serializable {
 
     void initInputLayer(String name) {
         int[] rgbArray;
-        rgbArray=imageLoader.rgbArr(imageLoader.loadImg(name));
+        rgbArray=imageLoader.loadImg(name).getRGB(0,0,20,20,null,0,20);
         for (int i = 0; i < rgbArray.length; i++) {
             inputLayer[i] = rgbArray[i];
         }
@@ -181,7 +180,6 @@ class NeuralNet implements Serializable {
                     counthiddenLayerOut();
                     setOutputLayerInputs();
                     counOutput();
-                    studycounter++;
                     System.out.println(numOfPatterns);
                 } while (ERROR(answers[numOfPatterns]) > 0.0001);
             }
